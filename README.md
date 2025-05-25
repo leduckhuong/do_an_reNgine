@@ -1,386 +1,263 @@
-Hướng Dẫn Cài Đặt và Cấu Hình reNgine và DVWA
-Hướng dẫn này cung cấp các bước chi tiết để cài đặt và cấu hình reNgine (một công cụ quét bảo mật) và DVWA (Damn Vulnerable Web Application) trên máy ảo Ubuntu sử dụng VMware.
+# Hướng dẫn Cài đặt & Cấu hình reNgine và DVWA
 
-Cài Đặt reNgine
-Bước 1: Chuẩn Bị Môi Trường
+## Mục lục
 
-Máy ảo: Sử dụng máy ảo Ubuntu trên VMware với cấu hình:
-CPU: 6 nhân
-RAM: 6GB
+1. [Cài đặt và cấu hình reNgine](#cai-dat-va-cau-hinh-ren-gine)
 
+   1. [Bước 1: Chuẩn bị môi trường](#buoc-1-chuan-bi-moi-truong)
+   2. [Bước 2: Tải source từ GitHub](#buoc-2-tai-source-tu-github)
+   3. [Bước 3: Cấu hình môi trường](#buoc-3-cau-hinh-moi-truong)
+   4. [Bước 4: Cài đặt reNgine](#buoc-4-cai-dat-ren-gine)
+   5. [Bước 5: Kiểm tra và cấu hình sau cài đặt](#buoc-5-kiem-tra-va-cau-hinh-sau-cai-dat)
+2. [Cài đặt Web kiểm thử DVWA](#cai-dat-web-dvwa)
 
-Lưu ý: Nên sử dụng máy có cấu hình cao để đảm bảo hiệu suất tối ưu trong môi trường thực tế.
-Cập nhật hệ thống:sudo apt update && sudo apt upgrade -y
+---
 
+## I. Cài đặt và cấu hình reNgine
 
+### Bước 1: Chuẩn bị môi trường
 
-Bước 2: Tải Source Code reNgine
+Trong demo này, sử dụng máy ảo **Ubuntu** trên **VMware**, cấu hình:
 
-Clone mã nguồn từ GitHub:git clone https://github.com/yogeshojha/reNgine
+* CPU: 6 Core
+* RAM: 6GB
 
+> ⚠️ **Khuyến nghị**: reNgine nên chạy trên máy có cấu hình cao để đảm bảo hiệu năng.
 
+Cập nhật hệ thống:
 
-Bước 3: Cấu Hình reNgine
+```bash
+sudo apt update && sudo apt upgrade -y
+```
 
-Di chuyển vào thư mục reNgine:
+---
+
+### Bước 2: Tải source từ GitHub
+
+Clone mã nguồn reNgine:
+
+```bash
+git clone https://github.com/yogeshojha/reNgine
 cd reNgine
+```
 
+---
 
-Chỉnh sửa file .env:
+### Bước 3: Cấu hình môi trường
+
+Mở và chỉnh sửa file `.env`:
+
+```bash
 vi .env
+```
 
+Nội dung mẫu file `.env`:
 
-Giải thích các biến môi trường trong file .env:
+![env preview](./assets/Picture1.png)
 
+#### Giải thích các biến cấu hình
 
+##### **General**
 
-Mục
-Biến
-Giá trị mẫu
-Mô tả
+```env
+COMPOSE_PROJECT_NAME=reNgine
+```
 
+Tên dự án dùng bởi Docker Compose để định danh các container, network, volumes.
 
+##### **SSL Configuration**
 
-General
-COMPOSE_PROJECT_NAME
-reNgine
-Tên dự án dùng trong Docker Compose để định danh container, network, volume.
+```env
+AUTHORITY_NAME=reNgine
+AUTHORITY_PASSWORD=nSrmNkwT
+COMPANY=reNgine
+DOMAIN_NAME=reNgine.example.com
+COUNTRY_CODE=US
+STATE=Georgia
+CITY=Atlanta
+```
 
+Dùng để tạo chứng chỉ SSL tự ký. Thay `DOMAIN_NAME` bằng domain thật nếu có.
 
-SSL Specific Configuration
+##### **Database Configurations**
 
+```env
+POSTGRES_DB=reNgine
+POSTGRES_USER=reNgine
+POSTGRES_PASSWORD=hE2a5@K&9nEY1fzgA6X
+POSTGRES_PORT=5432
+POSTGRES_HOST=db
+```
 
+##### **Celery Scaling**
 
+```env
+MAX_CONCURRENCY=80
+MIN_CONCURRENCY=10
+```
 
+Gợi ý cấu hình theo RAM:
 
+* 4GB: MAX = 10
+* 8GB: MAX = 30
+* 16GB: MAX = 50
 
-AUTHORITY_NAME
-reNgine
-Tên tổ chức phát hành chứng chỉ SSL (Certificate Authority).
+→ Với máy 6GB RAM, sử dụng:
 
-
-
-AUTHORITY_PASSWORD
-nSrmNkwT
-Mật khẩu bảo vệ private key của CA.
-
-
-
-COMPANY
-reNgine
-Tên công ty/tổ chức trong metadata chứng chỉ SSL.
-
-
-
-DOMAIN_NAME
-reNgine.example.com
-Tên miền áp dụng chứng chỉ SSL (thay bằng domain thực tế).
-
-
-
-COUNTRY_CODE
-US
-Mã quốc gia (ISO 3166-1 alpha-2, ví dụ: VN cho Việt Nam).
-
-
-
-STATE
-Georgia
-Tên bang/tỉnh trong metadata chứng chỉ.
-
-
-
-CITY
-Atlanta
-Tên thành phố trong metadata chứng chỉ.
-
-
-Database Configurations
-
-
-
-
-
-
-POSTGRES_DB
-reNgine
-Tên cơ sở dữ liệu chính của reNgine.
-
-
-
-POSTGRES_USER
-reNgine
-Tên người dùng đăng nhập vào cơ sở dữ liệu.
-
-
-
-POSTGRES_PASSWORD
-hE2a5@K&9nEY1fzgA6X
-Mật khẩu của người dùng cơ sở dữ liệu.
-
-
-
-POSTGRES_PORT
-5432
-Cổng mặc định của PostgreSQL.
-
-
-
-POSTGRES_HOST
-db
-Tên host/container chứa cơ sở dữ liệu (thường là tên service trong docker-compose.yml).
-
-
-Celery Scaling Configurations
-
-
-
-
-
-
-MAX_CONCURRENCY
-80
-Số lượng worker Celery tối đa chạy song song.
-
-
-
-MIN_CONCURRENCY
-10
-Số lượng worker tối thiểu để tiết kiệm tài nguyên.
-
-
-reNgine Web Interface Super User
-
-
-
-
-
-
-DJANGO_SUPERUSER_USERNAME
-reNgine
-Tên đăng nhập của tài khoản quản trị viên.
-
-
-
-DJANGO_SUPERUSER_EMAIL
-reNgine@example.com
-Email liên kết với tài khoản quản trị.
-
-
-
-DJANGO_SUPERUSER_PASSWORD
-Sm7IJG.IfHAFw9snSKv
-Mật khẩu của tài khoản quản trị.
-
-
-
-Lưu ý về cấu hình MAX_CONCURRENCY và MIN_CONCURRENCY:
-
-Gợi ý dựa trên RAM:
-4GB: MAX_CONCURRENCY=10
-8GB: MAX_CONCURRENCY=30
-16GB: MAX_CONCURRENCY=50
-
-
-Trong demo này, với cấu hình 6GB RAM:
+```env
 MAX_CONCURRENCY=30
 MIN_CONCURRENCY=10
+```
 
+##### **Superuser Web Interface**
 
-Lưu ý: Mặc dù không đúng với gợi ý chính thức, công cụ vẫn hoạt động bình thường.
+```env
+DJANGO_SUPERUSER_USERNAME=reNgine
+DJANGO_SUPERUSER_EMAIL=reNgine@example.com
+DJANGO_SUPERUSER_PASSWORD=Sm7IJG.IfHAFw9snSKv
+```
 
+---
 
+### Bước 4: Cài đặt reNgine
 
-Bước 4: Cài Đặt reNgine
+Thực hiện lệnh cài đặt:
 
-Chạy script cài đặt:
+```bash
 sudo ./install.sh
+```
 
+![install step](./assets/Picture2.png)
+![install process](./assets/Picture3.png)
 
-Lưu ý: reNgine sử dụng Docker để triển khai, tận dụng container hóa để đảm bảo tính nhất quán và dễ dàng di chuyển.
+Nếu gặp lỗi `createsuperuser`, dùng:
 
-Xử lý lỗi liên quan đến createsuperuser (nếu xảy ra):
+```bash
 sudo docker exec -it reNgine-web-1 python3 manage.py migrate
 sudo docker exec -it reNgine-web-1 python3 manage.py createsuperuser
+```
+
+Khởi chạy lại hệ thống:
+
+```bash
 sudo docker compose down
 sudo docker compose -f docker-compose.setup.yml up --build
 sudo docker compose up -d
+```
+
+---
+
+### Bước 5: Kiểm tra và cấu hình sau cài đặt
+
+Kiểm tra container:
+
+```bash
+sudo docker ps
+```
+
+![docker ps](./assets/Picture4.png)
+
+Giao diện web: `https://192.168.1.26`
+
+![web login](./assets/Picture5.png)
+
+#### Đăng nhập:
+
+* **User**: root
+* **Password**: 123456
+
+#### Thiết lập API Keys:
+
+![setup](./assets/Picture6.png)
+![setup](./assets/Picture7.png)
+![setup](./assets/Picture8.png)
+
+| Tool          | Link lấy API Key                                                   |
+| ------------- | ------------------------------------------------------------------ |
+| **OpenAI**    | [link](https://platform.openai.com/settings/organization/api-keys) |
+| **Netlas**    | [link](https://app.netlas.io/profile/)                             |
+| **Chaos**     | [link](https://cloud.projectdiscovery.io)                          |
+| **HackerOne** | [link](https://hackerone.com/settings/api_token/edit)              |
+
+#### Giao diện hoàn tất:
+
+![completed UI](./assets/Picture9.png)
+
+---
+
+## II. Cài đặt Web kiểm thử DVWA
+
+### Bước 1: Clone mã nguồn
+
+```bash
+git clone https://github.com/digininja/DVWA.git
+```
+
+![clone dvwa](./assets/Picture10.png)
+
+---
+
+### Bước 2: Di chuyển thư mục
+
+```bash
+mv DVWA/ /var/www/html/dvwa
+```
+
+![mv dvwa](./assets/Picture11.png)
+
+---
+
+### Bước 3: Cấu hình DVWA
+
+Chỉnh sửa `config.inc.php` trong thư mục `config/`:
+
+![config dvwa](./assets/Picture12.png)
 
 Giải thích:
 
-migrate: Chạy các migration để đồng bộ cơ sở dữ liệu với Django.
-createsuperuser: Tạo tài khoản quản trị viên thủ công.
-docker compose down: Dừng và gỡ các container.
-docker-compose.setup.yml up --build: Build lại image từ Dockerfile.
-docker compose up -d: Khởi chạy các dịch vụ ở chế độ nền.
+* `db_server`: host DB (mặc định: 127.0.0.1)
+* `db_database`: tên DB (mặc định: dvwa)
+* `db_user`: người dùng (mặc định: admin)
+* `db_password`: mật khẩu (mặc định: password)
+* `db_port`: cổng DB (mặc định: 3306)
 
+---
 
+### Bước 4: Cấp quyền thư mục
 
-Bước 5: Kiểm Tra và Cấu Hình Sau Cài Đặt
+```bash
+sudo chmod -R 777 /var/www/html/dvwa
+```
 
-Kiểm tra các container đang chạy:
-sudo docker ps
+![chmod dvwa](./assets/Picture13.png)
 
+---
 
-Kết quả: Các container chạy trên port 443 (HTTPS).
-Hình ảnh tham khảo: ./assets/Picture4.png
+### Bước 5: Tạo Database cho DVWA
 
-
-Truy cập giao diện web:
-
-Địa chỉ: https://192.168.1.26
-Hình ảnh tham khảo: ./assets/Picture5.png
-
-
-Đăng nhập:
-
-Sử dụng tài khoản đã thiết lập trong .env, ví dụ:
-Username: root
-Password: 123456
-
-
-Hình ảnh tham khảo: ./assets/Picture6.png, ./assets/Picture7.png, ./assets/Picture8.png
-
-
-Cấu hình API Key:
-
-Truy cập các dịch vụ sau để lấy API key:
-OpenAI: https://platform.openai.com/settings/organization/api-keys
-Netlas: https://app.netlas.io/profile/
-Chaos: https://cloud.projectdiscovery.io
-HackerOne: https://hackerone.com/settings/api_token/edit
-
-
-Giao diện sau khi hoàn tất cấu hình: ./assets/Picture9.png
-
-
-
-
-Cài Đặt DVWA
-Bước 1: Tải Mã Nguồn DVWA
-
-Clone mã nguồn từ GitHub:git clone https://github.com/digininja/DVWA.git
-
-
-Hình ảnh tham khảo: ./assets/Picture10.png
-
-
-
-Bước 2: Di Chuyển Thư Mục DVWA
-
-Di chuyển thư mục DVWA vào /var/www/html:mv DVWA/ /var/www/html/dvwa
-
-
-Hình ảnh tham khảo: ./assets/Picture11.png
-
-
-
-Bước 3: Cấu Hình DVWA
-
-Chỉnh sửa file cấu hình:
-File: /var/www/html/dvwa/config/config.inc.php
-Nội dung cấu hình:
-
-
-Biến
-Giá trị mặc định
-Mô tả
-
-
-
-db_server
-127.0.0.1
-Địa chỉ host của database server (localhost).
-
-
-db_database
-dvwa
-Tên cơ sở dữ liệu.
-
-
-db_user
-admin
-Tên người dùng database.
-
-
-db_password
-password
-Mật khẩu database.
-
-
-db_port
-3306
-Cổng kết nối MySQL.
-
-
-
-Hình ảnh tham khảo: ./assets/Picture12.png
-
-
-
-Bước 4: Cấp Quyền Cho Thư Mục DVWA
-
-Cấp quyền đầy đủ cho thư mục:sudo chmod -R 777 /var/www/html/dvwa
-
-
-Hình ảnh tham khảo: ./assets/Picture13.png
-
-
-
-Bước 5: Tạo Cơ Sở Dữ Liệu
-
-Thực hiện các lệnh sau để tạo database:
+```bash
 sudo su
 mysql -u root -p
+```
+
+Trong MySQL shell:
+
+```sql
 create database dvwa;
 create user 'admin'@'127.0.0.1' identified by 'password';
 grant all privileges on dvwa.* to 'admin'@'127.0.0.1';
 exit
+```
 
-Giải thích:
+---
 
-sudo su: Chuyển sang người dùng root.
-mysql -u root -p: Đăng nhập vào MySQL.
-create database dvwa: Tạo cơ sở dữ liệu dvwa.
-create user: Tạo user admin với mật khẩu password.
-grant all privileges: Cấp toàn quyền cho user admin trên database dvwa.
-exit: Thoát khỏi MySQL.
+## ✅ Kết luận
 
+* reNgine giúp quản lý và tự động hóa quá trình thu thập thông tin bảo mật một cách hiện đại và mạnh mẽ.
+* DVWA là công cụ tuyệt vời để thực hành khai thác lỗ hổng trên môi trường web.
 
+> Nếu cần mình có thể tách thành 2 file `README_reNgine.md` và `README_DVWA.md` cho từng phần riêng biệt.
 
-Bước 6: Cấu Hình Apache
+---
 
-Khởi động Apache:
-sudo systemctl start apache2
-
-
-Chỉnh sửa file php.ini:
-sudo vi /etc/php/8.2/apache2/php.ini
-
-
-Tìm và sửa: allow_url_include = On
-Lưu và thoát.
-
-
-Khởi động lại Apache:
-sudo systemctl restart apache2.service
-
-
-
-Bước 7: Cấu Hình Ban Đầu DVWA
-
-Truy cập: http://127.0.0.1/dvwa/setup.php
-Nhấn Create/Reset Database để tạo hoặc reset cơ sở dữ liệu.
-Hình ảnh tham khảo: ./assets/Picture14.png
-
-Bước 8: Kiểm Tra Kết Quả
-
-Truy cập: http://127.0.0.1/dvwa/login.php
-Đăng nhập:
-Username: admin
-Password: password
-
-
-Giao diện sau khi đăng nhập: ./assets/Picture15.png
-
-
+Bạn muốn mình chuyển sang file `.md` hoàn chỉnh để tải về luôn không?
