@@ -248,16 +248,78 @@ create user 'admin'@'127.0.0.1' identified by 'password';
 grant all privileges on dvwa.* to 'admin'@'127.0.0.1';
 exit
 ```
+---
+
+### **Bước 6: Cấu hình Apache**
+
+1. **Bật dịch vụ Apache2:**
+
+   ```bash
+   sudo systemctl start apache2
+   ```
+
+2. **Chỉnh sửa file `php.ini`:**
+
+   Mở file cấu hình PHP dùng cho Apache:
+
+   ```bash
+   sudo vi /etc/php/8.2/apache2/php.ini
+   ```
+
+   Tìm dòng:
+
+   ```ini
+   allow_url_include = Off
+   ```
+
+   Và thay đổi thành:
+
+   ```ini
+   allow_url_include = On
+   ```
+
+   Sau đó lưu lại và thoát (`ESC`, gõ `:wq` rồi Enter).
+
+3. **Khởi động lại dịch vụ Apache để áp dụng cấu hình:**
+
+   ```bash
+   sudo systemctl restart apache2.service
+   ```
 
 ---
 
-## ✅ Kết luận
+### **Bước 7: Cấu hình ban đầu cho web DVWA**
 
-* reNgine giúp quản lý và tự động hóa quá trình thu thập thông tin bảo mật một cách hiện đại và mạnh mẽ.
-* DVWA là công cụ tuyệt vời để thực hành khai thác lỗ hổng trên môi trường web.
+* Truy cập trình duyệt và nhập địa chỉ:
 
-> Nếu cần mình có thể tách thành 2 file `README_reNgine.md` và `README_DVWA.md` cho từng phần riêng biệt.
+  ```
+  http://127.0.0.1/dvwa/setup.php
+  ```
+
+* Tại giao diện cấu hình, nhấn **"Create / Reset Database"** để tạo bảng cơ sở dữ liệu hoặc khôi phục dữ liệu về mặc định.
+
+  ![](./assets/Picture14.png)
 
 ---
 
-Bạn muốn mình chuyển sang file `.md` hoàn chỉnh để tải về luôn không?
+### **Bước 8: Kiểm tra kết quả**
+
+* Truy cập địa chỉ sau trên trình duyệt:
+
+  ```
+  http://127.0.0.1/dvwa/login.php
+  ```
+
+  ![](./assets/Picture15.png)
+
+* Đăng nhập với thông tin mặc định:
+
+  ```
+  Username: admin
+  Password: password
+  ```
+
+* Sau khi đăng nhập thành công, bạn sẽ thấy giao diện chính của DVWA như hình dưới:
+
+  ![](./assets/Picture15.png)
+
