@@ -9,6 +9,7 @@
    3. [Bước 3: Cấu hình môi trường](#buoc-3-cau-hinh-moi-truong)
    4. [Bước 4: Cài đặt reNgine](#buoc-4-cai-dat-ren-gine)
    5. [Bước 5: Kiểm tra và cấu hình sau cài đặt](#buoc-5-kiem-tra-va-cau-hinh-sau-cai-dat)
+
 2. [Cài đặt Web kiểm thử DVWA](#cai-dat-web-dvwa)
 
 ---
@@ -19,8 +20,8 @@
 
 Trong demo này, sử dụng máy ảo **Ubuntu** trên **VMware**, cấu hình:
 
-* CPU: 6 Core
-* RAM: 6GB
+- CPU: 6 Core
+- RAM: 6GB
 
 > ⚠️ **Khuyến nghị**: reNgine nên chạy trên máy có cấu hình cao để đảm bảo hiệu năng.
 
@@ -98,9 +99,9 @@ MIN_CONCURRENCY=10
 
 Gợi ý cấu hình theo RAM:
 
-* 4GB: MAX = 10
-* 8GB: MAX = 30
-* 16GB: MAX = 50
+- 4GB: MAX = 10
+- 8GB: MAX = 30
+- 16GB: MAX = 50
 
 → Với máy 6GB RAM, sử dụng:
 
@@ -163,8 +164,8 @@ Giao diện web: `https://192.168.1.26`
 
 #### Đăng nhập:
 
-* **User**: root
-* **Password**: 123456
+- **User**: root
+- **Password**: 123456
 
 #### Thiết lập API Keys:
 
@@ -215,11 +216,11 @@ Chỉnh sửa `config.inc.php` trong thư mục `config/`:
 
 Giải thích:
 
-* `db_server`: host DB (mặc định: 127.0.0.1)
-* `db_database`: tên DB (mặc định: dvwa)
-* `db_user`: người dùng (mặc định: admin)
-* `db_password`: mật khẩu (mặc định: password)
-* `db_port`: cổng DB (mặc định: 3306)
+- `db_server`: host DB (mặc định: 127.0.0.1)
+- `db_database`: tên DB (mặc định: dvwa)
+- `db_user`: người dùng (mặc định: admin)
+- `db_password`: mật khẩu (mặc định: password)
+- `db_port`: cổng DB (mặc định: 3306)
 
 ---
 
@@ -248,6 +249,7 @@ create user 'admin'@'127.0.0.1' identified by 'password';
 grant all privileges on dvwa.* to 'admin'@'127.0.0.1';
 exit
 ```
+
 ---
 
 ### **Bước 6: Cấu hình Apache**
@@ -290,13 +292,13 @@ exit
 
 ### **Bước 7: Cấu hình ban đầu cho web DVWA**
 
-* Truy cập trình duyệt và nhập địa chỉ:
+- Truy cập trình duyệt và nhập địa chỉ:
 
   ```
   http://127.0.0.1/dvwa/setup.php
   ```
 
-* Tại giao diện cấu hình, nhấn **"Create / Reset Database"** để tạo bảng cơ sở dữ liệu hoặc khôi phục dữ liệu về mặc định.
+- Tại giao diện cấu hình, nhấn **"Create / Reset Database"** để tạo bảng cơ sở dữ liệu hoặc khôi phục dữ liệu về mặc định.
 
   ![](./assets/Picture14.png)
 
@@ -304,7 +306,7 @@ exit
 
 ### **Bước 8: Kiểm tra kết quả**
 
-* Truy cập địa chỉ sau trên trình duyệt:
+- Truy cập địa chỉ sau trên trình duyệt:
 
   ```
   http://127.0.0.1/dvwa/login.php
@@ -312,14 +314,13 @@ exit
 
   ![](./assets/Picture15.png)
 
-* Đăng nhập với thông tin mặc định:
+- Đăng nhập với thông tin mặc định:
 
   ```
   Username: admin
   Password: password
   ```
 
-* Sau khi đăng nhập thành công, bạn sẽ thấy giao diện chính của DVWA như hình dưới:
+- Sau khi đăng nhập thành công, bạn sẽ thấy giao diện chính của DVWA như hình dưới:
 
-  ![](./assets/Picture15.png)
-
+  ![](./assets/Picture16.png)
