@@ -134,8 +134,8 @@ sudo ./install.sh
 Nếu gặp lỗi `createsuperuser`, dùng:
 
 ```bash
-sudo docker exec -it reNgine-web-1 python3 manage.py migrate
-sudo docker exec -it reNgine-web-1 python3 manage.py createsuperuser
+sudo docker exec -it rengine-web-1 python3 manage.py migrate
+sudo docker exec -it rengine-web-1 python3 manage.py createsuperuser
 ```
 
 Khởi chạy lại hệ thống:
